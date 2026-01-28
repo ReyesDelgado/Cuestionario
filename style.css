@@ -222,36 +222,74 @@ body {
     justify-content: flex-start;
 }
 
-.radio-option-item input[type="radio"] {
+.radio-option-item input[type="radio"],
+.radio-option-item input[type="checkbox"] {
     display: grid;
     place-content: center;
     width: 32px;
-    /* Tamaño optimizado para fidelidad visual */
     height: 32px;
     min-width: 32px;
-    /* Blindaje contra distorsión */
     min-height: 32px;
     margin: 0;
     border: 2px solid #5f6368;
-    /* Color gris de la imagen */
     border-radius: 50%;
-    /* Círculo perfecto */
     background-color: #fff;
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    /* Evita que se aplaste */
     position: relative;
 }
 
-.radio-option-item input[type="radio"]:checked {
+.radio-option-item input[type="radio"] {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 50%;
+    /* Círculo perfecto */
+}
+
+.radio-option-item input[type="checkbox"] {
+    width: 38px;
+    /* Un poco más grande como se solicitó */
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 8px;
+    /* Cuadrado con esquinas redondeadas */
+}
+
+.radio-option-item input[type="radio"]:checked,
+.radio-option-item input[type="checkbox"]:checked {
+    border-color: var(--accent);
+    background: white;
+    /* Fondo blanco */
     transform: scale(1.1);
+    box-shadow: 0 4px 12px var(--accent-shadow);
+}
+
+.radio-option-item input[type="radio"]:checked::after,
+.radio-option-item input[type="checkbox"]:checked::after {
+    content: "";
+    width: 20px;
+    /* Punto azul más grande y protagónico */
+    height: 20px;
+    /* Punto azul */
+    border-radius: 50%;
 }
 
 .radio-option-item input[type="radio"]:checked::after {
-    width: 6px;
-    height: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
 }
+
+.radio-option-item input[type="checkbox"]:checked::after {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+}
+
 
 /* Frequency Matrix (AI Tools) */
 .matrix-question-title {
@@ -400,9 +438,8 @@ body {
 
 .matrix-header-sticky,
 .matrix-row {
-
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1.5fr;
+    grid-template-columns: 2fr 1.5fr;
     align-items: center;
     padding: 20px;
     background: white;
@@ -484,7 +521,7 @@ body {
 
 .question-row {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1.5fr;
+    grid-template-columns: 2fr 1.5fr;
     align-items: center;
     padding: 2.5rem 2.5rem;
     border: 1px solid var(--border);
@@ -505,9 +542,9 @@ body {
     display: block;
     font-size: 1.1rem;
     /* Reducido de 1.3rem */
-    font-weight: 600;
     color: #000000;
     margin-bottom: 0.5rem;
+    text-align: justify;
 }
 
 .question-subtext {
@@ -565,16 +602,19 @@ body {
 /* Checked State */
 .likert-option input:checked+.likert-circle {
     border-color: var(--accent);
-    background: var(--accent);
+    background: white;
+    /* Fondo blanco */
     transform: scale(1.1);
     box-shadow: 0 4px 12px var(--accent-shadow);
 }
 
 .likert-option input:checked+.likert-circle::after {
     content: "";
-    width: 10px;
-    height: 10px;
-    background: white;
+    width: 20px;
+    /* Punto azul más grande y protagónico */
+    height: 20px;
+    background: var(--accent);
+    /* Punto azul */
     border-radius: 50%;
 }
 
@@ -749,8 +789,8 @@ body {
     /* Ajuste radical de la grilla para móvil */
     .matrix-header-sticky,
     .question-row {
-        grid-template-columns: 1fr 120px 120px;
-        /* Pregunta | Pasado | Ahora */
+        grid-template-columns: 1fr 140px;
+        /* Pregunta | Pasado */
         gap: 0.5rem;
         padding: 1rem 0.5rem;
     }
@@ -777,9 +817,8 @@ body {
         width: 100%;
     }
 
-    /* Asegurar que Pasado y Ahora estén centrados */
-    .col-past,
-    .col-now {
+    /* Asegurar que Pasado esté centrado */
+    .col-past {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -863,76 +902,19 @@ body {
         border-width: 1px;
     }
 
-    /* Separador vertical entre Pasado y Ahora */
     /* Ajuste radical de la grilla para móvil */
     .matrix-header-sticky,
     .question-row {
-        /* Aumentamos el gap entre las columnas de Pasado y Ahora */
-        grid-template-columns: 1fr 120px 10px 120px;
-        /* Pregunta | Pasado | Separador | Ahora */
-        gap: 0;
-        padding: 1rem 0.5rem;
-    }
-
-    /* Cabecera fija móvil */
-    .matrix-header-sticky {
-        display: grid;
-        top: 0;
-        font-size: 0.7rem;
-        padding: 10px 5px;
-        z-index: 95;
-        border-radius: 0;
-        text-align: left;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .col-past {
-        text-align: center;
-        /* Asegurar texto centrado */
-        justify-content: center;
-        display: flex;
-    }
-
-    /* El separador ahora es su propia "columna" virtual en el grid de 4 cols
-       Pero como no podemos cambiar el HTML fácilmente, usamos pseudo-elemento o border en el elemento correcto.
-       
-       Mejor estrategia: Volver a 3 columnas pero usar Margin/Padding inteligente.
-    */
-    .matrix-header-sticky,
-    .question-row {
-        grid-template-columns: 1fr 125px 125px;
+        grid-template-columns: 1fr 140px;
+        /* Pregunta | Pasado */
         grid-gap: 12px;
-        /* Aumentamos gap para separar Pregunta de Pasado */
         align-items: center;
-        /* Alineación vertical CENTRADA para los círculos */
     }
 
-    /* Separador vertical perfectamente centrado */
     .side-past,
     .col-past {
-        border-right: 2px solid #cbd5e1;
-        padding-right: 24px;
-        margin-right: 0;
         display: flex;
         justify-content: center;
-        width: 100%;
-    }
-
-    /* Alineación de CÍRCULOS (side-now) a la izquierda */
-    .side-now {
-        display: flex;
-        justify-content: flex-start;
-        /* Círculos a la izquierda */
-        padding-left: 2px;
-        width: 100%;
-    }
-
-    /* Alineación del TÍTULO (col-now) al centro */
-    .col-now {
-        display: flex;
-        justify-content: center !important;
-        /* Texto AHORA centrado */
-        padding-left: 0;
         width: 100%;
     }
 }
@@ -942,7 +924,7 @@ body {
 
     .matrix-header-sticky,
     .question-row {
-        grid-template-columns: 1fr 100px 100px;
+        grid-template-columns: 1fr 120px;
         /* Aún más compacto */
     }
 
