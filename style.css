@@ -451,39 +451,45 @@ body {
     /* Alineación a la izquierda para encabezados */
 }
 
-/* Contenedor para agrupar elementos pegajosos */
+/* Contenedor para agrupar elementos pegajosos (Desktop y Móvil) */
 .mobile-sticky-block {
-    background: white;
-    z-index: 100;
-}
-
-/* Recordatorio pegajoso (Desktop/General) */
-.sticky-reminder {
     position: sticky;
     top: 73px;
-    /* Justo debajo del header principal */
-    background: #f8fafc;
-    /* Color de fondo del body */
-    padding: 12px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--accent);
-    z-index: 95;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
+    /* Justo debajo del header principal en Desktop */
+    z-index: 100;
+    background: white;
+    /* Color sólido para evitar transparencias al hacer scroll */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-bottom: none;
 }
 
-/* Línea azul de la imagen */
+/* Recordatorio pegajoso */
+.sticky-reminder {
+    background: white;
+    padding: 15px 25px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #000;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+/* Encabezado de la matriz */
 .matrix-header-sticky {
     font-weight: 700;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #000000;
-    position: sticky;
-    top: 118px;
-    /* Header (73px) + Reminder (~45px) */
-    z-index: 90;
+    background: white;
+    /* Los bordes y padding se heredan de la definición compartida de .matrix-header-sticky */
+    border: none !important;
+    /* Quitamos bordes individuales para no duplicar con el contenedor */
+    border-bottom: 3px solid var(--accent) !important;
+    border-radius: 0 !important;
 }
 
 /* Alineación de los grupos de radio buttons */
@@ -813,20 +819,17 @@ body {
     /* Ajuste radical de la grilla para móvil */
     .matrix-header-sticky,
     .question-row {
-        grid-template-columns: 1fr 140px;
-        /* Pregunta | Pasado */
+        grid-template-columns: 1fr 170px;
+        /* Pregunta | Pasado (Ampliado para círculos más grandes) */
         gap: 0.5rem;
         padding: 1rem 0.5rem;
     }
 
     /* Cabecera fija móvil REFINADA */
     .mobile-sticky-block {
-        position: sticky;
         top: 0;
-        z-index: 110;
-        background: white;
-        /* Asegura que el espacio entre elementos sea blanco */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        /* Al inicio de la pantalla en móvil */
+        z-index: 120;
     }
 
     .sticky-reminder {
@@ -889,32 +892,32 @@ body {
         font-size: 0.8rem;
     }
 
-    /* Compactar escalas Likert */
+    /* Compactar escalas Likert - Ahora con círculos grandes y cómodos */
     .likert-group {
         padding: 0;
-        gap: 2px;
+        gap: 4px;
     }
 
     .likert-circle {
-        width: 20px;
-        /* Círculos mucho más pequeños */
-        height: 20px;
-        border-width: 1px;
+        width: 30px;
+        /* Círculos más grandes para táctil */
+        height: 30px;
+        border-width: 1.5px;
     }
 
     .likert-label {
-        font-size: 0.7rem;
-        /* Números pequeños */
+        font-size: 0.8rem;
+        font-weight: 600;
     }
 
     /* Estado seleccionado ajustado */
     .likert-option input:checked+.likert-circle {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     .likert-option input:checked+.likert-circle::after {
-        width: 6px;
-        height: 6px;
+        width: 16px;
+        height: 16px;
     }
 
     /* Ocultar elementos decorativos en móvil */
