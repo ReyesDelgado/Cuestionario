@@ -451,6 +451,28 @@ body {
     /* Alineación a la izquierda para encabezados */
 }
 
+/* Contenedor para agrupar elementos pegajosos */
+.mobile-sticky-block {
+    background: white;
+    z-index: 100;
+}
+
+/* Recordatorio pegajoso (Desktop/General) */
+.sticky-reminder {
+    position: sticky;
+    top: 73px;
+    /* Justo debajo del header principal */
+    background: #f8fafc;
+    /* Color de fondo del body */
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    z-index: 95;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
 /* Línea azul de la imagen */
 .matrix-header-sticky {
     font-weight: 700;
@@ -459,7 +481,8 @@ body {
     letter-spacing: 0.1em;
     color: #000000;
     position: sticky;
-    top: 73px;
+    top: 118px;
+    /* Header (73px) + Reminder (~45px) */
     z-index: 90;
 }
 
@@ -796,16 +819,38 @@ body {
         padding: 1rem 0.5rem;
     }
 
-    /* Cabecera fija móvil */
+    /* Cabecera fija móvil REFINADA */
+    .mobile-sticky-block {
+        position: sticky;
+        top: 0;
+        z-index: 110;
+        background: white;
+        /* Asegura que el espacio entre elementos sea blanco */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .sticky-reminder {
+        position: relative;
+        /* Ya no es sticky individual */
+        top: auto;
+        font-size: 0.85rem;
+        padding: 12px 15px;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        color: #000
+    }
+
     .matrix-header-sticky {
+        position: relative;
+        /* Ya no es sticky individual */
+        top: auto;
         display: grid;
-        top: 60px;
         font-size: 0.7rem;
         padding: 10px 5px;
-        z-index: 95;
         border-radius: 0;
         text-align: center;
-        /* Centrar todo por defecto */
+        background: white;
+        border-top: none;
     }
 
     .col-category {
@@ -880,8 +925,12 @@ body {
     .app-header {
         padding: 0.5rem 0;
         position: relative;
-        /* YA NO ES STICKY EN MÓVIL */
+        /* YA NO ES STICKY EN MÓVIL PARA AHORRAR ESPACIO */
         top: auto;
+        height: auto;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
     }
 
     .user-info-section {
