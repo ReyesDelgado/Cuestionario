@@ -199,10 +199,7 @@ window.validateAndNext = function () {
     const freqUsingAi = document.querySelector('input[name="frequency_using_ai"]:checked');
     const aiUsage = document.querySelectorAll('input[name="ai_usage"]:checked');
 
-    if (!timeUsingAi) {
-        alert('Por favor, indica cuánto tiempo llevas utilizando la IAG.');
-        return;
-    }
+
     if (!freqUsingAi) {
         alert('Por favor, indica con qué frecuencia utilizas la IAG.');
         return;
@@ -582,4 +579,5 @@ if (document.readyState === 'loading') {
 } else {
     startup();
 }
+
 
