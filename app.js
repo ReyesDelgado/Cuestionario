@@ -198,15 +198,6 @@ window.validateAndNext = function () {
     const timeUsingAi = document.querySelector('input[name="time_using_ai"]:checked');
     const freqUsingAi = document.querySelector('input[name="frequency_using_ai"]:checked');
     const aiUsage = document.querySelectorAll('input[name="ai_usage"]:checked');
-
-
-    if (!freqUsingAi) {
-        alert('Por favor, indica con qué frecuencia utilizas la IAG.');
-        return;
-    }
-    if (aiUsage.length === 0) {
-        alert('Por favor, indica para qué usas la IA (puedes marcar varias opciones).');
-        return;
     }
 
     // Validar matriz de frecuencia (Excepto "otras" que es opcional)
@@ -579,5 +570,6 @@ if (document.readyState === 'loading') {
 } else {
     startup();
 }
+
 
 
