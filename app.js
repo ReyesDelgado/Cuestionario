@@ -204,9 +204,6 @@ window.validateAndNext = function () {
     const tools = ['chatgpt', 'copilot', 'gemini', 'claude', 'canva', 'gamma', 'perplexity', 'dalle', 'notebooklm'];
     for (const tool of tools) {
         const selected = document.querySelector(`input[name="freq_${tool}"]:checked`);
-        if (!selected) {
-            alert(`Por favor, selecciona la frecuencia para la herramienta: ${tool.charAt(0).toUpperCase() + tool.slice(1)}`);
-            return;
         }
     }
 
@@ -225,11 +222,6 @@ window.prevSection = function () {
 window.validateSection2AndNext = function () {
     const required = QUESTIONS.flatMap(q => [`past_${q.id}`]);
     const missing = required.filter(k => !responses[k]);
-
-    if (missing.length > 0) {
-        alert('Por favor, selecciona una valoración para todas las categorías antes de continuar.');
-        // Opcional: podrías hacer scroll al primer elemento faltante
-        return;
     }
 
     // Todo bien, vamos a la Sección 3 (Datos Personales)
@@ -570,6 +562,7 @@ if (document.readyState === 'loading') {
 } else {
     startup();
 }
+
 
 
 
