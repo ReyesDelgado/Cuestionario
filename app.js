@@ -47,12 +47,25 @@ if (sharedD) {
 // 4. Renderizado del Cuestionario
 // 5. Gestión de Toggle (Desmarcar)
 window.toggleLikert = function (radio, key, val) {
+    const saveStatus = document.getElementById('save-status');
+
     if (radio.getAttribute('data-checked-state') === 'true') {
         // Desmarcar
         radio.checked = false;
         radio.setAttribute('data-checked-state', 'false');
         delete responses[key];
         localStorage.setItem('survey_responses', JSON.stringify(responses));
+
+        // Feedback visual para desmarcado
+        if (saveStatus) {
+            saveStatus.innerHTML = '<i data-lucide="refresh-cw" class="icon-small spin"></i> Guardando...';
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                saveStatus.innerHTML = '<i data-lucide="check-circle" class="icon-small"></i> Guardado automáticamente';
+                if (window.lucide) lucide.createIcons();
+            }, 600);
+        }
     } else {
         // Marcar
         // Resetear hermanos
@@ -60,7 +73,7 @@ window.toggleLikert = function (radio, key, val) {
             r.setAttribute('data-checked-state', 'false');
         });
         radio.setAttribute('data-checked-state', 'true');
-        saveResponse(key, val);
+        saveResponse(key, val); // saveResponse ya tiene su propio feedback visual
     }
 };
 
@@ -145,22 +158,33 @@ function initSection1Toggle() {
         }
 
         radio.onclick = function () {
+            const saveStatus = document.getElementById('save-status');
+
+            // Función helper para feedback
+            const showFeedback = (msg = 'Guardado automáticamente', icon = 'check-circle') => {
+                if (saveStatus) {
+                    saveStatus.innerHTML = '<i data-lucide="refresh-cw" class="icon-small spin"></i> Guardando...';
+                    if (window.lucide) lucide.createIcons();
+                    setTimeout(() => {
+                        saveStatus.innerHTML = `<i data-lucide="${icon}" class="icon-small"></i> ${msg}`;
+                        if (window.lucide) lucide.createIcons();
+                    }, 600);
+                }
+            };
+
             // Lógica similar a toggleLikert pero para section 1 (que usa inputs normales)
             if (this.getAttribute('data-checked-state') === 'true') {
                 this.checked = false;
                 this.setAttribute('data-checked-state', 'false');
-                // Actualizar localStorage manualmente si es necesario, 
-                // pero restoreSection1Inputs guarda en 'change', que no salta si desmarcamos via JS?
-                // El listener global 'change' de app.js (linea 145) maneja el guardado.
-                // Al hacer checked=false programaticamente, el evento change NO se dispara.
-                // Debemos dispararlo manualmente o actualizar localStorage.
                 localStorage.removeItem(`input_${this.name}`);
+
+                showFeedback('Guardado automáticamente');
             } else {
                 // Reset hermanos
                 document.querySelectorAll(`input[name="${this.name}"]`).forEach(r => r.setAttribute('data-checked-state', 'false'));
                 this.setAttribute('data-checked-state', 'true');
-                // El evento click dispara change nativo si cambia de unchecked a checked? Si.
-                // Permitimos que fluya para que el listener global guarde.
+
+                showFeedback('Guardado automáticamente');
             }
         };
     });
@@ -211,6 +235,17 @@ document.addEventListener('change', (e) => {
             const checked = Array.from(document.querySelectorAll(`input[name="${el.name}"]:checked`))
                 .map(i => i.value);
             localStorage.setItem(`input_${el.name}`, checked.join('|||'));
+
+            // Feedback visual para checkboxes
+            const saveStatus = document.getElementById('save-status');
+            if (saveStatus) {
+                saveStatus.innerHTML = '<i data-lucide="refresh-cw" class="icon-small spin"></i> Guardando...';
+                if (window.lucide) lucide.createIcons();
+                setTimeout(() => {
+                    saveStatus.innerHTML = '<i data-lucide="check-circle" class="icon-small"></i> Guardado automáticamente';
+                    if (window.lucide) lucide.createIcons();
+                }, 600);
+            }
         }
     }
 });
