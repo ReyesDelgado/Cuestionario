@@ -373,15 +373,14 @@ if (mainForm) {
         const transactionId = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         console.log(`📝 [${transactionId}] Evento submit capturado. Validando...`);
 
-        // Validar Sección 3 (Datos Personales) - OPCIONAL
-        const userNameInput = document.getElementById('user-name');
+        // Validar Sección 4 (Datos Personales) - Apellidos es el único obligatorio
         const userSurnameInput = document.getElementById('user-surname');
         const userProfileInput = document.getElementById('user-profile');
 
-        const userName = userNameInput ? userNameInput.value.trim() : "";
         const userSurname = userSurnameInput ? userSurnameInput.value.trim() : "";
         const userProfile = userProfileInput ? userProfileInput.value : "";
 
+        const btn = document.getElementById('submit-btn');
         // VALIDACIÓN DE APELLIDOS (OBLIGATORIO)
         if (!userSurname) {
             alert('Por favor, indica tus apellidos para poder enviar el cuestionario.');
@@ -390,7 +389,6 @@ if (mainForm) {
             return;
         }
 
-        const btn = document.getElementById('submit-btn');
         // DESACTIVAR INMEDIATAMENTE el botón y marcar como enviando
         isSubmitting = true;
         btn.disabled = true;
@@ -407,44 +405,48 @@ if (mainForm) {
         const aiUsageNodes = document.querySelectorAll('input[name="ai_usage"]:checked');
         const aiUsage = Array.from(aiUsageNodes).map(n => n.value).join(', ');
 
-        // Construir payload en el ORDEN EXACTO del cuestionario
+        // Construir payload EN EL ORDEN Y CON LAS CLAVES EXACTAS para Sheets y Supabase
         const payload = {
             "Fecha": new Date().toLocaleString(),
-            "Nombre": userName,
             "Apellidos": userSurname,
             "Género": userProfile,
             "¿Cuánto tiempo llevas utilizando la IAG?": timeUsingAi,
             "¿Con qué frecuencia usas la IAG?": freqUsingAi
         };
 
-        // 1. Matriz de frecuencia de herramientas (en orden)
+        // 1. Matriz de frecuencia de herramientas (en el orden exacto del SQL)
         const tools = ['chatgpt', 'copilot', 'gemini', 'claude', 'canva', 'gamma', 'perplexity', 'dalle', 'notebooklm'];
         tools.forEach(tool => {
             const val = document.querySelector(`input[name="freq_${tool}"]:checked`);
             if (val) {
                 let toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
+                if (tool === 'chatgpt') toolName = 'Chatgpt'; // Normalizar para SQL
                 if (tool === 'dalle') toolName = 'Dall-e';
                 if (tool === 'notebooklm') toolName = 'NotebookLM';
 
                 payload[`Frecuencia_${toolName}`] = val.value;
+            } else {
+                // Asegurar que la key existe aunque sea vacía para evitar desfases en Sheets
+                let toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
+                if (tool === 'chatgpt') toolName = 'Chatgpt';
+                if (tool === 'dalle') toolName = 'Dall-e';
+                if (tool === 'notebooklm') toolName = 'NotebookLM';
+                payload[`Frecuencia_${toolName}`] = "";
             }
         });
 
-        // 1.1 Manejo especial para "Otras" (Campo de texto)
+        // 1.1 "Otras" herramientas
         const otrasVal = document.getElementById('freq_otras')?.value;
-        if (otrasVal) {
-            payload[`Frecuencia_Otras`] = otrasVal;
-        }
+        payload[`Frecuencia_Otras`] = otrasVal || "";
 
         // 2. ¿Para qué usas la IA? (Multiselección)
         payload["¿Para qué usas la IA?"] = aiUsage;
 
-        // 3. Items de valoración (1-55) con nombres completos (Para Sheets y Supabase)
+        // 3. Items de valoración (1-55) con nombres completos del index.html
         QUESTIONS.forEach((q) => {
             const pv = responses[`past_${q.id}`];
-            if (pv !== undefined) {
-                payload[`${q.category}`] = pv;
-            }
+            // Enviamos el valor o vacío, pero SIEMPRE la clave para mantener la estructura de la fila
+            payload[`${q.category}`] = pv !== undefined ? pv : "";
         });
 
         console.log(`📦 [${transactionId}] Payload construido:`, payload);
