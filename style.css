@@ -1200,7 +1200,6 @@ body {
     /* Ajuste para el input "Otras" en la fila de herramientas */
     .tool-frequency-row:last-child {
         display: flex;
-        flex-direction: column !important;
         align-items: flex-start !important;
     }
 
